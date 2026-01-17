@@ -35,6 +35,7 @@ class ChatTemplate:
             self.dataset_formatter = template_registry.get_template_class(template)
         self.model_formatter = ModelFormatter(formatter, custom_formatter)
 
+    # TODO
     def format_supervised_sample(self, raw_sample: dict[str, Any]) -> tuple[str, str, Any]:
         raw_conversation, multi_modal_info = self.dataset_formatter.format_supervised_sample(
             raw_sample

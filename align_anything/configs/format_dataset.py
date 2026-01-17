@@ -555,7 +555,7 @@ class AA_TI2T(BaseFormatter):
         worse_id = 2 if better_id == 1 else 1
         return better_id in [1, 2] and worse_id in [1, 2]
 
-
+#TODO
 @register_template('AA_TA2T')
 class AA_TA2T(BaseFormatter):
     system_prompt: str = 'You are a helpful assistant.'
@@ -652,6 +652,50 @@ class AA_TA2T(BaseFormatter):
         audio = librosa.resample(raw_audio, orig_sr=raw_sr, target_sr=16000)
 
         return conversation, {'audios': [audio]}
+
+
+#TODO
+@register_template('AA_TA2TA')
+class AA_TA2TA(BaseFormatter):
+    system_prompt: str = 'You are a helpful assistant.'
+
+    def format_supervised_sample(self, raw_sample: dict[str, Any]) -> dict[str, Any]:
+        
+
+        better_conversation = [
+            {'role': 'system', 'content': [{'type': 'text', 'text': self.system_prompt}]},
+            {
+                'role': 'user',
+                'content': [
+                    {'type': 'audio', 'audio_url': 'placeholder'},
+                    # {'type': 'text', 'text': prompt},
+                ],
+            },
+            {
+                'role': 'assistant', 
+                'content': [
+                    # {'type': 'text', 'text': better_response},
+                    {'type': 'audio', 'audio_url': 'placeholder'},
+                ],
+            },
+        ]
+
+        raw_user_audio, raw_user_sr = (
+            raw_sample['user_audio']['array'],
+            raw_sample['user_audio']['sampling_rate'],
+        )
+        user_audio = librosa.resample(raw_user_audio, orig_sr=raw_user_sr, target_sr=16000)
+
+        raw_assistant_audio, raw_assistant_sr = (
+            raw_sample['assistant_audio']['array'],
+            raw_sample['assistant_audio']['sampling_rate'],
+        )
+        assistant_audio = librosa.resample(raw_assistant_audio, orig_sr=raw_assistant_sr, target_sr=16000)
+
+        meta_info = {'audios': [user_audio, assistant_audio]}
+
+        return better_conversation, meta_info
+
 
 
 @register_template('AA_TA2T_LLF')
